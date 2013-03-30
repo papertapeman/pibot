@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 import smbus
-import time
 
 # CONSTANTS
 DIGITAL_INPUT     = 0x00
 DIGITAL_OUTPUT    = 0x01
-ANALOG_INPUT      = 0x05
+#ANALOG_INPUT      = 0x05 # TODO: currently unused
 
 CMD_BEGIN         = 0xFE
 CMD_VERSION       = 0x24
