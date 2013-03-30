@@ -13,6 +13,10 @@ CMD_VERSION       = 0x24
 CMD_MODE          = 0x40
 CMD_DIGITAL_WRITE = 0x41
 CMD_DIGITAL_READ  = 0x42
+CMD_MOTOR_FORWARD = 0x50
+CMD_MOTOR_REVERSE = 0x51
+CMD_MOTOR_STOP    = 0x52
+CMD_MOTOR_CURRENT = 0x53
 
 # GLOBALS
 BUS = smbus.SMBus(0)
@@ -54,6 +58,22 @@ def pin_digital_read(pin):
     execute(CMD_DIGITAL_READ, pin)
     return read()
 
+def motor_forward(num, percentage):
+    pwm = int(percentage * 2.5)
+    execute(CMD_MOTOR_FORWARD, num, pwm)
+
+def motor_reverse(num, percentage):
+    pwm = int(percentage * 2.5)
+    execute(CMD_MOTOR_REVERSE, num, pwm)
+
+def motor_stop(num):
+    execute(CMD_MOTOR_STOP, num)
+
+def motor_current(mA):
+    current_max = 2 # 2A for the board
+    val = int(((mA/1000.0) / current_max) * 250)
+    execute(CMD_MOTOR_CURRENT, val)
+
 
 def proto_lights():
     pin_digital_out(1)
@@ -75,9 +95,18 @@ def proto_read():
         print "Digital read of pin 4: %d" % pin_digital_read(4)
         raw_input()
 
+def proto_motors():
+    motor_current(400)
+
+    while True:
+        motor_forward(1, 100)
+        raw_input()
+        motor_stop(1)
+        raw_input()
+
 if __name__ == '__main__':
     print "Firmware Version: %d" % version()
     print "Ready to go........."
     raw_input()
 
-    proto_lights()
+    proto_motors()
