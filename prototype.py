@@ -35,7 +35,7 @@ def debug_bytes(byte_list):
     debug(["0x%02x" % x for x in byte_list]) 
 
 def execute(command, *params):
-    debug_bytes([CMD_BEGIN, command] + list(params))
+    debug([CMD_BEGIN, command] + list(params))
     write(CMD_BEGIN)
     write(command)
     for byte in params:
@@ -58,13 +58,19 @@ def pin_digital_read(pin):
     execute(CMD_DIGITAL_READ, pin)
     return read()
 
-def motor_forward(num, percentage):
-    pwm = int(percentage * 2.5)
+def motor_forward(num, pwm):
     execute(CMD_MOTOR_FORWARD, num, pwm)
 
-def motor_reverse(num, percentage):
+def motor_forward_pc(num, percentage):
     pwm = int(percentage * 2.5)
+    motor_forward(num, pwm)
+
+def motor_reverse(num, pwm):
     execute(CMD_MOTOR_REVERSE, num, pwm)
+
+def motor_reverse_pc(num, percentage):
+    pwm = int(percentage * 2.5)
+    motor_reverse(num, pwm)
 
 def motor_stop(num):
     execute(CMD_MOTOR_STOP, num)
@@ -99,9 +105,39 @@ def proto_motors():
     motor_current(400)
 
     while True:
-        motor_forward(1, 100)
+        motor_forward_pc(1, 100)
+        motor_forward_pc(2, 100)
         raw_input()
         motor_stop(1)
+        motor_stop(2)
+        raw_input()
+        motor_reverse_pc(1, 100)
+        motor_reverse_pc(2, 100)
+        raw_input()
+        motor_stop(1)
+        motor_stop(2)
+        raw_input()
+
+def proto_motor_stepping():
+    motor_current(400)
+
+    while True:
+        for pc in xrange(0, 100, 10):
+            motor_forward_pc(1, pc)
+            motor_forward_pc(2, pc)
+            raw_input()
+
+        motor_stop(1)
+        motor_stop(2)
+        raw_input()
+
+        for pc in xrange(100, 0, -10):
+            motor_forward_pc(1, pc)
+            motor_forward_pc(2, pc)
+            raw_input()
+
+        motor_stop(1)
+        motor_stop(2)
         raw_input()
 
 if __name__ == '__main__':
@@ -109,4 +145,4 @@ if __name__ == '__main__':
     print "Ready to go........."
     raw_input()
 
-    proto_motors()
+    proto_motor_stepping()
