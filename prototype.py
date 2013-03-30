@@ -45,10 +45,10 @@ def version():
     execute(CMD_VERSION)
     return read()
 
-def pin_digital_out(pin):
+def pin_mode_digital_out(pin):
     execute(CMD_MODE, pin, DIGITAL_OUTPUT)
 
-def pin_digital_in(pin):
+def pin_mode_digital_in(pin):
     execute(CMD_MODE, pin, DIGITAL_INPUT)
 
 def pin_digital_write(pin, value):
@@ -82,8 +82,8 @@ def motor_current(mA):
 
 
 def proto_lights():
-    pin_digital_out(1)
-    pin_digital_out(2)
+    pin_mode_digital_out(1)
+    pin_mode_digital_out(2)
     raw_input()
 
     p1_val = False
@@ -96,7 +96,7 @@ def proto_lights():
         p2_val = not p2_val
 
 def proto_read():
-    pin_digital_in(4)
+    pin_mode_digital_in(4)
     while True:
         print "Digital read of pin 4: %d" % pin_digital_read(4)
         raw_input()
