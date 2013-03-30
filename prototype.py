@@ -17,6 +17,7 @@ CMD_MOTOR_FORWARD = 0x50
 CMD_MOTOR_REVERSE = 0x51
 CMD_MOTOR_STOP    = 0x52
 CMD_MOTOR_CURRENT = 0x53
+CMD_SWITCH_READ   = 0x54
 
 # GLOBALS
 BUS = smbus.SMBus(0)
@@ -80,6 +81,14 @@ def motor_current(mA):
     val = int(((mA/1000.0) / current_max) * 250)
     execute(CMD_MOTOR_CURRENT, val)
 
+def switch_read():
+    execute(CMD_SWITCH_READ)
+    return read()
+
+def switch_read_bits():
+    ret = switch_read()
+    return [bool(ret & pow(2, bit)) for bit in xrange(0, 4)]
+
 
 def proto_lights():
     pin_mode_digital_out(1)
@@ -140,9 +149,16 @@ def proto_motor_stepping():
         motor_stop(2)
         raw_input()
 
+def proto_switch_read():
+    while True:
+        print "Switch value: %s" % switch_read()
+        print "Bits: %s" % switch_read_bits()
+
+        raw_input()
+
 if __name__ == '__main__':
     print "Firmware Version: %d" % version()
     print "Ready to go........."
     raw_input()
 
-    proto_motor_stepping()
+    proto_switch_read()
