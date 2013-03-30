@@ -35,7 +35,7 @@ def debug_bytes(byte_list):
     debug(["0x%02x" % x for x in byte_list]) 
 
 def execute(command, *params):
-    debug([CMD_BEGIN, command] + list(params))
+    debug_bytes([CMD_BEGIN, command] + list(params))
     write(CMD_BEGIN)
     write(command)
     for byte in params:
