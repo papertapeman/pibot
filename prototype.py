@@ -3,28 +3,35 @@
 import smbus
 import time
 
-bus = smbus.SMBus(0)
-address = 0x4a # sourced from `i2cdetect -y 0`
+# CONSTANTS
+DIGITAL_INPUT     = 0x00
+DIGITAL_OUTPUT    = 0x01
+ANALOG_INPUT      = 0x05
 
-# TODO: digital input = 0x00, digital output = 0x01, analog input = 0x05
-DIGITAL_INPUT = 0x00
-DIGITAL_OUTPUT = 0x01
-ANALOG_INPUT = 0x05
+CMD_BEGIN         = 0xFE
+CMD_VERSION       = 0x24
+CMD_MODE          = 0x40
+CMD_DIGITAL_WRITE = 0x41
+CMD_DIGITAL_READ  = 0x42
 
-CMD_BEGIN = 0xFE
-CMD_VERSION = 0x24
-CMD_DO = 0x40
-CMD_DW = 0x41
+# GLOBALS
+BUS = smbus.SMBus(0)
+ADDRESS = 0x4A # sourced from `i2cdetect -y 0`
 
 def write(value):
-    #print "Writing 0x%02x" % value
-    bus.write_byte_data(address, 0, value)
+    BUS.write_byte(ADDRESS, value)
 
 def read():
-    return bus.read_byte_data(address, 1)
+    return BUS.read_byte(ADDRESS)
+
+def debug(stuff):
+    print "DEBUG: %s" % stuff
+
+def debug_bytes(byte_list):
+    debug(["0x%02x" % x for x in byte_list]) 
 
 def execute(command, *params):
-    print [CMD_BEGIN, command] + list(params)
+    debug_bytes([CMD_BEGIN, command] + list(params))
     write(CMD_BEGIN)
     write(command)
     for byte in params:
@@ -32,27 +39,45 @@ def execute(command, *params):
 
 def version():
     execute(CMD_VERSION)
+    return read()
 
-def pin_do(pin):
-    execute(CMD_DO, pin, DIGITAL_OUTPUT)
+def pin_digital_out(pin):
+    execute(CMD_MODE, pin, DIGITAL_OUTPUT)
 
-def pin_dw(pin, value):
-    execute(CMD_DW, pin, value)
+def pin_digital_in(pin):
+    execute(CMD_MODE, pin, DIGITAL_INPUT)
 
-if __name__ == '__main__':
-    version()
-    print read()
-    raw_input()
+def pin_digital_write(pin, value):
+    execute(CMD_DIGITAL_WRITE, pin, value)
 
-    pin_do(1)
-    pin_do(2)
+def pin_digital_read(pin):
+    execute(CMD_DIGITAL_READ, pin)
+    return read()
+
+
+def proto_lights():
+    pin_digital_out(1)
+    pin_digital_out(2)
     raw_input()
 
     p1_val = False
     p2_val = True
     while True:
-        pin_dw(0x01, p1_val)
-        pin_dw(0x02, p2_val)
+        pin_digital_write(0x01, p1_val)
+        pin_digital_write(0x02, p2_val)
         raw_input()
         p1_val = not p1_val
         p2_val = not p2_val
+
+def proto_read():
+    pin_digital_in(4)
+    while True:
+        print "Digital read of pin 4: %d" % pin_digital_read(4)
+        raw_input()
+
+if __name__ == '__main__':
+    print "Firmware Version: %d" % version()
+    print "Ready to go........."
+    raw_input()
+
+    proto_lights()
