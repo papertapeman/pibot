@@ -6,7 +6,7 @@ read, execute = fake()
 # CONSTANTS
 DIGITAL_INPUT = 0x00
 DIGITAL_OUTPUT = 0x01
-#ANALOG_INPUT      = 0x05 # TODO: currently unused
+#ANALOG_INPUT = 0x05 # TODO: currently unused
 
 CMD_VERSION = 0x24
 CMD_MODE = 0x40
