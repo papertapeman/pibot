@@ -4,3 +4,6 @@ lib/
 local/
 .*.sw?
 share/
+build/
+*.pyc
+*.pyo
