@@ -4,7 +4,8 @@
 from unittest import TestCase, main as test_main
 from doublex import Mock, verify
 from hamcrest import assert_that, equal_to
-from api import ABus, ABusAddress, BusAddress, BusAddressExecuter
+from api import ABus, ABusAddress
+from concrete import BusAddress, BusAddressExecuter
 
 
 class TestBusAddress(TestCase):
@@ -64,6 +65,7 @@ class TestBusExecute(TestCase):
 
         # Assert
         assert_that(mock_bus_address, verify())
+
 
 if __name__ == '__main__':
     test_main()

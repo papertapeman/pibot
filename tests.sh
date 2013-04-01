@@ -1,4 +1,4 @@
 #!/bin/bash
 
 . bin/activate
-./tests.py
+./bus/tests.py
