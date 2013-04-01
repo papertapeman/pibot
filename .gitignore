@@ -5,3 +5,5 @@ local/
 .*.sw?
 share/
 build/
+*.pyc
+*.pyo
