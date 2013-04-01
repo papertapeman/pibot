@@ -30,13 +30,21 @@ class TestBusAddress(TestCase):
 
     def setUp(self):
         self.mock_bus = mock(concreter(Bus))
-        self.sut = BusAddress(self.mock_bus, 0x00)
+        self.address = 0x00
+        self.sut = BusAddress(self.mock_bus, self.address)
 
     def test_read_byte(self):
-        BYTE_READ = 0x00
-        expect_call(self.mock_bus.read_byte).returning(BYTE_READ)
+        BYTE_TO_READ = 0x00
+        expect_call(self.mock_bus.read_byte).with_args(self.address).returning(BYTE_TO_READ)
         assert_that(self.sut.read_byte(),
-                    equal_to(BYTE_READ))
+                    equal_to(BYTE_TO_READ))
+        self.mock_bus.assert_that_is_satisfied()
+
+    def test_write_byte(self):
+        BYTE_TO_WRITE = 0x00
+        expect_call(self.mock_bus.write_byte).with_args(self.address, BYTE_TO_WRITE)
+        self.sut.write_byte(BYTE_TO_WRITE)
+        self.mock_bus.assert_that_is_satisfied()
 
 if __name__ == '__main__':
     test_main()
