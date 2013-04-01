@@ -32,7 +32,7 @@ class ABusAddress(object):
         pass
 
 
-class ABusAddressExecuter(object):
+class ABusAddressExecutor(object):
 
     __metaclass__ = ABCMeta
 

@@ -14,7 +14,7 @@ class BusAddress(object):
         self.bus.write_byte(self.address, byte)
 
 
-class BusAddressExecuter(object):
+class BusAddressExecutor(object):
 
     def __init__(self, bus_address, execution_leader):
         self.bus_address = bus_address

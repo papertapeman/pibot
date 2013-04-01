@@ -5,7 +5,7 @@ from unittest import TestCase, main as test_main
 from doublex import Mock, verify
 from hamcrest import assert_that, equal_to
 from api import ABus, ABusAddress
-from concrete import BusAddress, BusAddressExecuter
+from concrete import BusAddress, BusAddressExecutor
 
 
 class TestBusAddress(TestCase):
@@ -58,10 +58,10 @@ class TestBusExecute(TestCase):
             for param in PARAMS:
                 mock_bus_address.write_byte(param)
 
-        bus_address_executer = BusAddressExecuter(mock_bus_address, self.execution_leader)
+        bus_address_executor = BusAddressExecutor(mock_bus_address, self.execution_leader)
 
         # Act
-        bus_address_executer.execute(COMMAND, *PARAMS)
+        bus_address_executor.execute(COMMAND, *PARAMS)
 
         # Assert
         assert_that(mock_bus_address, verify())
